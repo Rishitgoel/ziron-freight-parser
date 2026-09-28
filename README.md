@@ -81,7 +81,7 @@ ziron-freight-parser/
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Rishitgoel/ziron-freight-parser.git
 cd ziron-freight-parser
 ```
 
