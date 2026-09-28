@@ -1,0 +1,40 @@
+{
+  "status": "FLAGGED_FOR_HUMAN_REVIEW",
+  "summary": "Document flagged for human review due to 1 blocking error(s): [INCOMPLETE_DATA] Missing or incomplete required fields: load_number, pickup_location.state, pickup_location.zip",
+  "data": {
+    "carrier_name": "Date: 10/22/2025",
+    "load_number": null,
+    "pickup_location": {
+      "city": "Dallas Facility",
+      "state": null,
+      "zip": null
+    },
+    "delivery_location": {
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30303"
+    },
+    "total_linehaul_rate": 1500.0,
+    "fuel_surcharge": 250.0,
+    "total_pay": 1750.0,
+    "weight_lbs": 32000
+  },
+  "validation": {
+    "is_valid": false,
+    "errors": [
+      {
+        "code": "INCOMPLETE_DATA",
+        "message": "Missing or incomplete required fields: load_number, pickup_location.state, pickup_location.zip",
+        "severity": "ERROR",
+        "field": "load_number; pickup_location.state; pickup_location.zip"
+      }
+    ],
+    "warnings": []
+  },
+  "metadata": {
+    "parser_engine": "deterministic_offline_fallback",
+    "model": "offline-rule-parser",
+    "processing_time_ms": 1.54,
+    "structured_output_mode": "mock_pydantic"
+  }
+}

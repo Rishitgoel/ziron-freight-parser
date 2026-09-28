@@ -1,0 +1,33 @@
+{
+  "status": "APPROVED",
+  "summary": "Document successfully parsed and verified. All validation checks passed (0 errors, 0 warnings).",
+  "data": {
+    "carrier_name": "Swift Transport Solutions LLC",
+    "load_number": "LD-104928",
+    "pickup_location": {
+      "city": "Chicago",
+      "state": "IL",
+      "zip": "60601"
+    },
+    "delivery_location": {
+      "city": "Columbus",
+      "state": "OH",
+      "zip": "43215"
+    },
+    "total_linehaul_rate": 2000.0,
+    "fuel_surcharge": 400.0,
+    "total_pay": 2400.0,
+    "weight_lbs": 38500
+  },
+  "validation": {
+    "is_valid": true,
+    "errors": [],
+    "warnings": []
+  },
+  "metadata": {
+    "parser_engine": "deterministic_offline_fallback",
+    "model": "offline-rule-parser",
+    "processing_time_ms": 1.55,
+    "structured_output_mode": "mock_pydantic"
+  }
+}

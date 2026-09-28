@@ -1,0 +1,21 @@
+===================================================
+FREIGHT RATE CONFIRMATION & ORDER AGREEMENT
+===================================================
+Ref #: PENDING_ASSIGNMENT
+Carrier: 
+Date: 10/22/2025
+PICKUP DETAILS:
+Origin: Dallas Facility
+Date: Oct 25, 2025
+DROP-OFF DETAILS:
+Destination: Warehouse B, Atlanta, GA 30303
+Date: Oct 27, 2025
+CARGO DETAILS:
+Description: Palletized Hardware
+Total Weight: 32,000 lbs
+FINANCIAL AGREEMENT:
+Linehaul Rate: $1,500.00
+Fuel Surcharge (FSC): $250.00
+---------------------------------------------------
+Total Agreed Amount: $1,750.00
+Special Instructions: Check in with dispatch.

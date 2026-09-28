@@ -1,0 +1,47 @@
+{
+  "status": "FLAGGED_FOR_HUMAN_REVIEW",
+  "summary": "Document flagged for human review due to 1 blocking error(s) and 1 warning(s): [RATE_MISMATCH] Financial mismatch: Linehaul ($2,200.00) + Fuel Surcharge ($350.00) = $2,550.00, which does not match Total Agreed Pay ($2,800.00). Discrepancy: $250.00. | [OVERWEIGHT_LOAD] Load weight 46,800 lbs exceeds standard legal highway threshold of 45,000 lbs. Overweight permits or specialized multi-axle equipment required.",
+  "data": {
+    "carrier_name": "Apex Logistics Solutions LLC",
+    "load_number": "LD-994821",
+    "pickup_location": {
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75201"
+    },
+    "delivery_location": {
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30303"
+    },
+    "total_linehaul_rate": 2200.0,
+    "fuel_surcharge": 350.0,
+    "total_pay": 2800.0,
+    "weight_lbs": 46800
+  },
+  "validation": {
+    "is_valid": false,
+    "errors": [
+      {
+        "code": "RATE_MISMATCH",
+        "message": "Financial mismatch: Linehaul ($2,200.00) + Fuel Surcharge ($350.00) = $2,550.00, which does not match Total Agreed Pay ($2,800.00). Discrepancy: $250.00.",
+        "severity": "ERROR",
+        "field": "total_pay"
+      }
+    ],
+    "warnings": [
+      {
+        "code": "OVERWEIGHT_LOAD",
+        "message": "Load weight 46,800 lbs exceeds standard legal highway threshold of 45,000 lbs. Overweight permits or specialized multi-axle equipment required.",
+        "severity": "WARNING",
+        "field": "weight_lbs"
+      }
+    ]
+  },
+  "metadata": {
+    "parser_engine": "deterministic_offline_fallback",
+    "model": "offline-rule-parser",
+    "processing_time_ms": 1.48,
+    "structured_output_mode": "mock_pydantic"
+  }
+}

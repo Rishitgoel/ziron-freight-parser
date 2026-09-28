@@ -1,0 +1,48 @@
+﻿Reading document from: data\sample_document.txt (771 chars)
+Running extraction and validation pipeline...
+
+
++-----------------------------------------------------------------------------+
+|   FLAGGED FOR HUMAN REVIEW    Ziron Freight Intelligence Automated Decision |
++-----------------------------------------------------------------------------+
++-------------------------------- Audit Trail --------------------------------+
+| Decision Summary:                                                           |
+| Document flagged for human review due to 1 blocking error(s) and 1          |
+| warning(s): [RATE_MISMATCH] Financial mismatch: Linehaul ($2,200.00) + Fuel |
+| Surcharge ($350.00) = $2,550.00, which does not match Total Agreed Pay      |
+| ($2,800.00). Discrepancy: $250.00. | [OVERWEIGHT_LOAD] Load weight 46,800   |
+| lbs exceeds standard legal highway threshold of 45,000 lbs. Overweight      |
+| permits or specialized multi-axle equipment required.                       |
++-----------------------------------------------------------------------------+
+                  Extracted Document Data                  
++---------------------------------------------------------+
+| Field                    | Extracted Value              |
+|--------------------------+------------------------------|
+| Carrier Name             | Apex Logistics Solutions LLC |
+| Load / Ref #             | LD-994821                    |
+| Pickup Location          | Dallas, TX 75201             |
+| Delivery Location        | Atlanta, GA 30303            |
+| Linehaul Rate            | $2,200.00                    |
+| Fuel Surcharge (FSC)     | $350.00                      |
+| Total Agreed Pay         | $2,800.00                    |
+| Cargo Weight             | 46,800 lbs                   |
++---------------------------------------------------------+
+                         Validation Anomalies Detected                         
++-----------------------------------------------------------------------------+
+| Severity     | Code                 | Description                           |
+|--------------+----------------------+---------------------------------------|
+| ERROR        | RATE_MISMATCH        | Financial mismatch: Linehaul          |
+|              |                      | ($2,200.00) + Fuel Surcharge          |
+|              |                      | ($350.00) = $2,550.00, which does not |
+|              |                      | match Total Agreed Pay ($2,800.00).   |
+|              |                      | Discrepancy: $250.00.                 |
+| WARNING      | OVERWEIGHT_LOAD      | Load weight 46,800 lbs exceeds        |
+|              |                      | standard legal highway threshold of   |
+|              |                      | 45,000 lbs. Overweight permits or     |
+|              |                      | specialized multi-axle equipment      |
+|              |                      | required.                             |
++-----------------------------------------------------------------------------+
+Engine: deterministic_offline_fallback | Model: offline-rule-parser | Latency: 
+1.48 ms
+
+Clean structured output saved to: outputs\sample_output.json
