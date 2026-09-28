@@ -1,0 +1,11 @@
+services:
+  ziron-freight-parser:
+    build: .
+    container_name: ziron-loadpilot-core
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-your_openai_api_key_here}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - USE_MOCK_PARSER=${USE_MOCK_PARSER:-false}
+    restart: unless-stopped

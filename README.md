@@ -1,6 +1,12 @@
 # Ziron Labs - Freight Document Intelligence & Automated Decision Pipeline
 
-A lightweight, production-grade Python service that parses unstructured operational freight documents (rate confirmations, load tenders, invoices) into strictly typed JSON, validates the data against deterministic logistics business rules, and executes an automated workflow routing decision.
+[![CI](https://github.com/Rishitgoel/ziron-freight-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/Rishitgoel/ziron-freight-parser/actions)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![Pydantic v2](https://img.shields.io/badge/Pydantic-v2.12-emerald.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-009688.svg)
+![License MIT](https://img.shields.io/badge/license-MIT-purple.svg)
+
+A lightweight, production-grade Python service that parses unstructured operational freight documents (rate confirmations, load tenders, invoices) into strictly typed JSON, validates the data against deterministic logistics business rules, and executes an automated workflow routing decision. Includes an **interactive LoadPilot-styled web triage dashboard**, a **FastAPI REST API**, and a **CLI interface**.
 
 ---
 
@@ -45,12 +51,16 @@ Raw Freight Document
 
 ```
 ziron-freight-parser/
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions CI workflow (Python 3.11, 3.12, 3.13)
 ├── app/
 │   ├── __init__.py
 │   ├── models.py              # Canonical Pydantic schemas (FreightDocument, Location, DecisionResult)
 │   ├── parser.py              # OpenAI Structured Outputs parser + deterministic offline fallback
 │   ├── validator.py           # Deterministic validation engine (Decimal math, weight, completeness)
 │   ├── decision.py            # Workflow state routing & audit summary generator
+│   ├── web.py                 # FastAPI application & LoadPilot interactive triage dashboard
 │   └── main.py                # Pipeline orchestrator and Rich CLI entrypoint
 ├── data/
 │   ├── sample_document.txt    # Provided assignment document (triggers mismatch & overweight)
@@ -64,10 +74,13 @@ ziron-freight-parser/
 │   ├── test_models.py         # Schema validation, string ZIP preservation, and helpers
 │   ├── test_validator.py      # Unit tests for rate mismatch, overweight load, and completeness
 │   ├── test_decision.py       # Unit tests for decision state machine and telemetry
-│   └── test_parser.py         # Integration tests across sample, clean, and incomplete documents
+│   ├── test_parser.py         # Integration tests across sample, clean, and incomplete documents
+│   └── test_web.py            # Integration tests for FastAPI endpoints and healthcheck
+├── Dockerfile                 # Multi-stage production container definition
+├── docker-compose.yml         # One-command containerized execution
 ├── .env.example               # Environment variables template
 ├── .gitignore                 # Python gitignore
-├── requirements.txt           # Locked dependencies
+├── requirements.txt           # Locked dependencies (pydantic, openai, fastapi, uvicorn, pytest, rich)
 └── README.md                  # System documentation & architecture notes
 ```
 
@@ -120,23 +133,43 @@ USE_MOCK_PARSER=false
 
 ## How to Run the Pipeline
 
-### 1. Run Against the Provided Sample Document
+### 1. Launch the Interactive LoadPilot Web Dashboard & REST API
+```bash
+python -m app.web
+```
+* **Interactive Web Dashboard:** Open [http://localhost:8000](http://localhost:8000) in your browser.
+  * Styled directly with the official **Ziron Labs design system** (brand gradient `#3b6dff` -> `#5b4bff` -> `#7c3aed`, dark slate `#090d16`, glassmorphic cards).
+  * Includes one-click preset buttons: **Sample Doc (Flagged)**, **Clean Load (Approved)**, and **Incomplete Doc**.
+  * Shows live discrepancy cards, gross weight meters, raw JSON drawers, and human-in-the-loop action buttons.
+* **Interactive Swagger API Documentation:** Open [http://localhost:8000/docs](http://localhost:8000/docs).
+* **REST API Endpoint (`POST /api/v1/parse`):**
+  ```bash
+  curl -X POST http://localhost:8000/api/v1/parse \
+       -H "Content-Type: application/json" \
+       -d '{"raw_text": "...", "force_mock": true}'
+  ```
+
+### 2. Run via Docker Compose (Optional)
+```bash
+docker compose up --build
+```
+
+### 3. Run CLI Against the Provided Sample Document
 ```bash
 python -m app.main --file data/sample_document.txt --output outputs/sample_output.json
 ```
 
-### 2. Run in Offline / Mock Mode (Bypass API)
+### 4. Run CLI in Offline / Mock Mode (Bypass API)
 ```bash
 python -m app.main --file data/sample_document.txt --mock
 ```
 
-### 3. Run Against a Clean Document (Demonstrating `APPROVED` Status)
+### 5. Run Against Clean and Incomplete Documents
 ```bash
+# Clean document (APPROVED):
 python -m app.main --file data/valid_document.txt --output outputs/valid_output.json
-```
 
-### 4. Run Against an Incomplete Document (Demonstrating `INCOMPLETE_DATA` Error)
-```bash
+# Incomplete document (INCOMPLETE_DATA):
 python -m app.main --file data/incomplete_document.txt --output outputs/incomplete_output.json
 ```
 
@@ -144,7 +177,7 @@ python -m app.main --file data/incomplete_document.txt --output outputs/incomple
 
 ## Running the Automated Test Suite
 
-The repository includes a comprehensive `pytest` test suite with 20 unit and integration tests covering Pydantic models, boundary cases, financial math, and decision routing:
+The repository includes a comprehensive `pytest` test suite with 24 unit and integration tests covering Pydantic models, boundary cases, financial math, web endpoints, and decision routing:
 
 ```bash
 pytest -v
@@ -153,30 +186,34 @@ pytest -v
 Output:
 ```
 ============================= test session starts =============================
-collected 20 items
+collected 24 items
 
-tests/test_decision.py::test_decision_approved_when_clean PASSED         [  5%]
-tests/test_decision.py::test_decision_flagged_on_errors PASSED           [ 10%]
-tests/test_decision.py::test_decision_flagged_on_warnings PASSED         [ 15%]
-tests/test_decision.py::test_decision_metadata_preservation PASSED       [ 20%]
-tests/test_models.py::test_location_preserves_leading_zeros_in_zip PASSED [ 25%]
-tests/test_models.py::test_location_incomplete_check PASSED              [ 30%]
-tests/test_models.py::test_freight_document_instantiation PASSED         [ 35%]
-tests/test_models.py::test_validation_result_helpers PASSED              [ 40%]
-tests/test_parser.py::test_offline_parser_on_sample_document PASSED      [ 45%]
-tests/test_parser.py::test_end_to_end_sample_document_pipeline PASSED    [ 50%]
-tests/test_parser.py::test_end_to_end_valid_document_pipeline PASSED     [ 55%]
-tests/test_parser.py::test_end_to_end_incomplete_document_pipeline PASSED [ 60%]
-tests/test_validator.py::test_valid_document PASSED                      [ 65%]
-tests/test_validator.py::test_rate_mismatch_detected PASSED              [ 70%]
-tests/test_validator.py::test_overweight_load_warning PASSED             [ 75%]
-tests/test_validator.py::test_weight_limit_boundaries PASSED             [ 80%]
-tests/test_validator.py::test_missing_load_number PASSED                 [ 85%]
-tests/test_validator.py::test_incomplete_location_fields PASSED          [ 90%]
-tests/test_validator.py::test_financial_decimal_precision PASSED         [ 95%]
-tests/test_validator.py::test_multiple_simultaneous_issues PASSED        [100%]
+tests/test_decision.py::test_decision_approved_when_clean PASSED         [  4%]
+tests/test_decision.py::test_decision_flagged_on_errors PASSED           [  8%]
+tests/test_decision.py::test_decision_flagged_on_warnings PASSED         [ 12%]
+tests/test_decision.py::test_decision_metadata_preservation PASSED       [ 16%]
+tests/test_models.py::test_location_preserves_leading_zeros_in_zip PASSED [ 20%]
+tests/test_models.py::test_location_incomplete_check PASSED              [ 25%]
+tests/test_models.py::test_freight_document_instantiation PASSED         [ 29%]
+tests/test_models.py::test_validation_result_helpers PASSED              [ 33%]
+tests/test_parser.py::test_offline_parser_on_sample_document PASSED      [ 37%]
+tests/test_parser.py::test_end_to_end_sample_document_pipeline PASSED    [ 41%]
+tests/test_parser.py::test_end_to_end_valid_document_pipeline PASSED     [ 45%]
+tests/test_parser.py::test_end_to_end_incomplete_document_pipeline PASSED [ 50%]
+tests/test_validator.py::test_valid_document PASSED                      [ 54%]
+tests/test_validator.py::test_rate_mismatch_detected PASSED              [ 58%]
+tests/test_validator.py::test_overweight_load_warning PASSED             [ 62%]
+tests/test_validator.py::test_weight_limit_boundaries PASSED             [ 66%]
+tests/test_validator.py::test_missing_load_number PASSED                 [ 70%]
+tests/test_validator.py::test_incomplete_location_fields PASSED          [ 75%]
+tests/test_validator.py::test_financial_decimal_precision PASSED         [ 79%]
+tests/test_validator.py::test_multiple_simultaneous_issues PASSED        [ 83%]
+tests/test_web.py::test_health_check_endpoint PASSED                     [ 87%]
+tests/test_web.py::test_dashboard_html_endpoint PASSED                   [ 91%]
+tests/test_web.py::test_api_parse_sample_document PASSED                 [ 95%]
+tests/test_web.py::test_api_parse_empty_text_returns_400 PASSED          [100%]
 
-============================= 20 passed in 1.30s ==============================
+============================= 24 passed in 7.74s ==============================
 ```
 
 ---
